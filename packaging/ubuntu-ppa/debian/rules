@@ -1,0 +1,41 @@
+#!/usr/bin/make -f
+
+BUILDDIR = build
+INSTALLPREFIX = /usr
+
+# firstly called by launchpad
+clean:
+	rm -rf $(BUILDDIR)
+
+# secondly called by launchpad
+build: build-arch
+
+build-arch:
+	mkdir $(BUILDDIR)
+	cd $(BUILDDIR);cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=On -DCMAKE_INSTALL_PREFIX=$(INSTALLPREFIX) -DGLFW_BUILD_DOCS=Off -DGLFW_BUILD_EXAMPLES=Off -DGLFW_BUILD_TESTS=Off -DGLFW_INSTALL=On ..
+	make -C $(BUILDDIR)
+
+# thirdly called by launchpad
+binary: binary-arch
+
+binary-arch: libglfw3 libglfw3-dev
+
+libglfw3:
+	cd $(BUILDDIR); DESTDIR=../debian/tmp make install
+	rm -rf debian/tmp$(INSTALLPREFIX)/include
+	rm -rf debian/tmp$(INSTALLPREFIX)/lib/cmake
+	rm -rf debian/tmp$(INSTALLPREFIX)/lib/pkgconfig
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -plibglfw3
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+libglfw3-dev:
+	cd $(BUILDDIR); DESTDIR=../debian/tmp make install
+	rm -rf debian/tmp$(INSTALLPREFIX)/lib/libglfw.so*
+	mkdir -p debian/tmp/DEBIAN
+	dpkg-gencontrol -plibglfw3-dev
+	dpkg --build debian/tmp ..
+	rm -rf debian/tmp
+
+.PHONY: build build-arch binary binary-arch clean libglfw3 libglfw3-dev

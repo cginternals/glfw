@@ -1,0 +1,17 @@
+Source: libglfw3
+Section: misc
+Priority: optional
+Maintainer: Willy Scheibel <willy.scheibel@cginternals.com>
+Build-Depends: build-essential, cmake, libxrandr-dev, libxmu-dev, libxi-dev, libxinerama-dev, libxcursor-dev, libgl1-mesa-dev, libxext-dev
+Standards-Version: 3.8.0
+
+Package: libglfw3
+Architecture: any
+Homepage: https://github.org/glfw/glfw
+Description: A multi-platform library for OpenGL, window and input.
+
+Package: libglfw3-dev
+Architecture: any
+Depends: libglfw3
+Homepage: https://github.org/glfw/glfw
+Description: A multi-platform library for OpenGL, window and input.
